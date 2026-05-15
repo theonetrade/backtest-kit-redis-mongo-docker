@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backtest:
+    image: tripolskypetr/backtest-kit
+    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    container_name: pro
+    ports:
+      - "60050:60050"
+    restart: unless-stopped
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+    environment:
+      - MODE
+      - STRATEGY_FILE
+      - SYMBOL
+      - STRATEGY
+      - EXCHANGE
+      - FRAME
+      - UI
+      - TELEGRAM
+      - VERBOSE
+      - NO_CACHE
+      - NO_FLUSH
+      - ENTRY
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:60050/api/v1/health/health_check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+

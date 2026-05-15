@@ -15,40 +15,6 @@ This project ships **15 custom Persist adapters** that implement the full backte
 
 📚 **[API Reference](https://backtest-kit.github.io/documents/example_02_first_backtest.html)** | 🌟 **[Quick Start](https://github.com/tripolskypetr/backtest-kit/tree/master/example)** | **📰 [Article](https://backtest-kit.github.io/documents/article_07_ai_news_trading_signals.html)**
 
-## 🗂️ The 15 Persist Adapters
-
-Each adapter implements the corresponding `IPersist*Instance` interface from `backtest-kit` and is registered in [src/config/setup.ts](src/config/setup.ts). All adapters share the same skeleton:
-
-```ts
-PersistXAdapter.usePersistXAdapter(class implements IPersistXInstance {
-  constructor(/* context fields from backtest-kit */) {}
-  async waitForInit(initial: boolean) {
-    if (!initial) return;
-    await waitForInfra();        // gate first-touch on Mongo + Redis ready
-  }
-  async readXData(...) { return await ioc.xDbService.findByContext(...); }
-  async writeXData(..., when: Date) { await ioc.xDbService.upsert(..., when); }
-});
-```
-
-| Adapter | Collection | Context key (= unique index) | Purpose |
-|---|---|---|---|
-| **Candle** | `candle-items` | `(symbol, interval, timestamp)` | OHLCV cache; immutable inserts |
-| **Signal** | `signal-items` | `(symbol, strategyName, exchangeName)` | Live signal state per context |
-| **Schedule** | `schedule-items` | `(symbol, strategyName, exchangeName)` | Pending scheduled signal |
-| **Risk** | `risk-items` | `(riskName, exchangeName)` | Active risk positions snapshot |
-| **Partial** | `partial-items` | `(symbol, strategyName, exchangeName, signalId)` | Partial profit/loss levels per signal |
-| **Breakeven** | `breakeven-items` | `(symbol, strategyName, exchangeName, signalId)` | Breakeven reached flag |
-| **Storage** | `storage-items` | `(backtest, signalId)` | Closed/opened signal log per mode |
-| **Notification** | `notification-items` | `(backtest, notificationId)` | Event notifications |
-| **Log** | `log-items` | `(entryId)` | Strategy log entries |
-| **Measure** | `measure-items` | `(bucket, entryKey)` | LLM/API response cache (soft-delete) |
-| **Interval** | `interval-items` | `(bucket, entryKey)` | Once-per-interval markers (soft-delete) |
-| **Memory** | `memory-items` | `(signalId, bucketName, memoryId)` | Per-signal memory store (soft-delete) |
-| **Recent** | `recent-items` | `(symbol, strategyName, exchangeName, frameName, backtest)` | Last public signal per context |
-| **State** | `state-items` | `(signalId, bucketName)` | Per-signal state buckets |
-| **Session** | `session-items` | `(strategyName, exchangeName, frameName)` | One session per running strategy |
-
 
 ## 🚀 Quick Start
 
@@ -94,6 +60,41 @@ Or via npm script:
 npm run start:docker
 npm run stop:docker
 ```
+
+
+## 🗂️ The 15 Persist Adapters
+
+Each adapter implements the corresponding `IPersist*Instance` interface from `backtest-kit` and is registered in [src/config/setup.ts](src/config/setup.ts). All adapters share the same skeleton:
+
+```ts
+PersistXAdapter.usePersistXAdapter(class implements IPersistXInstance {
+  constructor(/* context fields from backtest-kit */) {}
+  async waitForInit(initial: boolean) {
+    if (!initial) return;
+    await waitForInfra();        // gate first-touch on Mongo + Redis ready
+  }
+  async readXData(...) { return await ioc.xDbService.findByContext(...); }
+  async writeXData(..., when: Date) { await ioc.xDbService.upsert(..., when); }
+});
+```
+
+| Adapter | Collection | Context key (= unique index) | Purpose |
+|---|---|---|---|
+| **Candle** | `candle-items` | `(symbol, interval, timestamp)` | OHLCV cache; immutable inserts |
+| **Signal** | `signal-items` | `(symbol, strategyName, exchangeName)` | Live signal state per context |
+| **Schedule** | `schedule-items` | `(symbol, strategyName, exchangeName)` | Pending scheduled signal |
+| **Risk** | `risk-items` | `(riskName, exchangeName)` | Active risk positions snapshot |
+| **Partial** | `partial-items` | `(symbol, strategyName, exchangeName, signalId)` | Partial profit/loss levels per signal |
+| **Breakeven** | `breakeven-items` | `(symbol, strategyName, exchangeName, signalId)` | Breakeven reached flag |
+| **Storage** | `storage-items` | `(backtest, signalId)` | Closed/opened signal log per mode |
+| **Notification** | `notification-items` | `(backtest, notificationId)` | Event notifications |
+| **Log** | `log-items` | `(entryId)` | Strategy log entries |
+| **Measure** | `measure-items` | `(bucket, entryKey)` | LLM/API response cache (soft-delete) |
+| **Interval** | `interval-items` | `(bucket, entryKey)` | Once-per-interval markers (soft-delete) |
+| **Memory** | `memory-items` | `(signalId, bucketName, memoryId)` | Per-signal memory store (soft-delete) |
+| **Recent** | `recent-items` | `(symbol, strategyName, exchangeName, frameName, backtest)` | Last public signal per context |
+| **State** | `state-items` | `(signalId, bucketName)` | Per-signal state buckets |
+| **Session** | `session-items` | `(strategyName, exchangeName, frameName)` | One session per running strategy |
 
 
 ## ⚛️ Atomicity & Read-After-Write Guarantee

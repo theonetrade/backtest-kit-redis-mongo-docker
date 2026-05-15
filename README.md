@@ -1,6 +1,6 @@
 <img src="https://github.com/tripolskypetr/backtest-kit/raw/refs/heads/master/assets/consciousness.svg" height="45px" align="right">
 
-# 🧿backtest-kit-redis-mongo-docker
+# 🧿 backtest-kit-redis-mongo-docker
 
 > A production-grade integration of [backtest-kit](https://github.com/tripolskypetr/backtest-kit) that replaces the default file-based `./dump/` persistence with **MongoDB** as the source of truth and **Redis** as an O(1) lookup cache, packaged with `docker-compose` for one-command deploys.
 
